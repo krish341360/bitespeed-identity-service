@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitespeed Identity Resolution Service</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1>Bitespeed Identity Resolution</h1>
+                    <p class="text-secondary">Customer identity tracking across multiple purchases</p>
+                </div>
+                <button id="resetDatabase" class="btn btn--secondary">Reset Database</button>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <button class="nav-btn nav-btn--active" data-section="dashboard">Dashboard</button>
+            <button class="nav-btn" data-section="api-testing">API Testing</button>
+            <button class="nav-btn" data-section="database">Database Viewer</button>
+            <button class="nav-btn" data-section="visualization">Visualization</button>
+            <button class="nav-btn" data-section="documentation">Documentation</button>
+        </nav>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section">
+            <div class="section-header">
+                <h2>Service Overview</h2>
+                <p>Bitespeed helps identify and track customer identity across multiple purchases using email and phone number linking.</p>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <div class="card__body">
+                        <h3>How It Works</h3>
+                        <ul class="feature-list">
+                            <li>Contacts are linked if they share email OR phone number</li>
+                            <li>Oldest contact becomes primary, newer ones become secondary</li>
+                            <li>New information creates secondary contacts</li>
+                            <li>Two primaries can be linked, converting newer to secondary</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card__body">
+                        <h3>Quick Test</h3>
+                        <form id="quickTestForm" class="quick-test-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" id="quickEmail" class="form-control" placeholder="example@domain.com">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Phone</label>
+                                    <input type="text" id="quickPhone" class="form-control" placeholder="123456">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn--primary btn--full-width">Test Identify</button>
+                        </form>
+                        <div id="quickTestResult" class="test-result"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__body">
+                    <h3>Example Scenarios</h3>
+                    <div class="examples-grid" id="exampleScenarios"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- API Testing Section -->
+        <section id="api-testing" class="section hidden">
+            <div class="section-header">
+                <h2>API Testing Interface</h2>
+                <p>Test the /identify endpoint with different email and phone combinations.</p>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <div class="card__body">
+                        <h3>Test Request</h3>
+                        <form id="apiTestForm">
+                            <div class="form-group">
+                                <label class="form-label">Email (optional)</label>
+                                <input type="email" id="testEmail" class="form-control" placeholder="user@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Phone Number (optional)</label>
+                                <input type="text" id="testPhone" class="form-control" placeholder="123456">
+                            </div>
+                            <button type="submit" class="btn btn--primary">Send Request</button>
+                        </form>
+                        
+                        <div class="request-preview">
+                            <h4>Request Preview</h4>
+                            <pre id="requestPreview" class="code-block"></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card__body">
+                        <h3>Response</h3>
+                        <div id="apiResponse" class="response-container">
+                            <p class="text-secondary">Submit a request to see the response</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__body">
+                    <h3>Request History</h3>
+                    <div id="requestHistory" class="history-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Database Viewer Section -->
+        <section id="database" class="section hidden">
+            <div class="section-header">
+                <h2>Database Viewer</h2>
+                <p>View all contact records and their relationships in the system.</p>
+            </div>
+
+            <div class="card">
+                <div class="card__body">
+                    <div class="flex items-center justify-between mb-16">
+                        <h3>Contact Records</h3>
+                        <button id="seedDatabase" class="btn btn--secondary">Add Sample Data</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="contactsTable" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Linked ID</th>
+                                    <th>Precedence</th>
+                                    <th>Created At</th>
+                                    <th>Updated At</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Visualization Section -->
+        <section id="visualization" class="section hidden">
+            <div class="section-header">
+                <h2>Contact Linking Visualization</h2>
+                <p>Visual representation of how contacts are linked together.</p>
+            </div>
+
+            <div class="card">
+                <div class="card__body">
+                    <h3>Contact Relationships</h3>
+                    <div id="contactVisualization" class="visualization-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Documentation Section -->
+        <section id="documentation" class="section hidden">
+            <div class="section-header">
+                <h2>API Documentation</h2>
+                <p>Complete reference for the identity resolution service.</p>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <div class="card__body">
+                        <h3>Endpoint</h3>
+                        <div class="endpoint-info">
+                            <code class="endpoint">POST /identify</code>
+                            <p>Identify and consolidate customer contact information.</p>
+                        </div>
+
+                        <h4>Request Body</h4>
+                        <pre class="code-block">{
+  "email"?: string,
+  "phoneNumber"?: string
+}</pre>
+
+                        <h4>Response</h4>
+                        <pre class="code-block">{
+  "contact": {
+    "primaryContactId": number,
+    "emails": string[],
+    "phoneNumbers": string[],
+    "secondaryContactIds": number[]
+  }
+}</pre>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card__body">
+                        <h3>Business Logic</h3>
+                        <div class="logic-section">
+                            <h4>Contact Linking</h4>
+                            <p>Contacts are linked if they have either email or phone number in common.</p>
+
+                            <h4>Primary Selection</h4>
+                            <p>The oldest contact becomes primary, with all newer related contacts becoming secondary.</p>
+
+                            <h4>Secondary Creation</h4>
+                            <p>When new information is provided for an existing contact, a secondary contact is created.</p>
+
+                            <h4>Primary Conversion</h4>
+                            <p>When two primary contacts need to be linked, the older one remains primary and the newer one becomes secondary.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card__body">
+                    <h3>Example Scenarios</h3>
+                    <div class="scenario-examples" id="documentationExamples"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
